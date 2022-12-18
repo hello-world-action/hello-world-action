@@ -1,0 +1,8 @@
+name: "Hello World"
+description: "Check if we need to make a commit today"
+outputs:
+  commit: # id of output
+    description: "If we should commit or not"
+runs:
+  using: "node16"
+  main: "dist/index.js"

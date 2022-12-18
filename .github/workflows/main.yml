@@ -1,0 +1,44 @@
+on:
+  schedule:
+    - cron: "0 9 * * *"
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: Write Hello World in commits
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Check the pixel for today
+        uses: ./ # Uses an action in the root directory
+        id: todaysPixel
+      # Use the output from `todaysPixel`
+      - name: Make a commit
+        if: steps.todaysPixel.outputs.commit == 'true'
+        run: |
+          ./incrementCommitCounter.sh
+          git config user.name "hello-world-action"
+          git config user.email ${{ secrets.USER_EMAIL }}
+          git add numberOfDays.txt
+          git commit -m "Github Actions Commit"
+          git push
+      - name: tweet
+        uses: actions/setup-node@v2 # Set up Node.js
+        with:
+          node-version: 14.x
+      - run: npm install # Install dependencies
+      - run: node screenshot.js # Take the screenshot
+      - uses: actions/upload-artifact@v2 # Upload the screenshot as an artifact
+        with:
+          name: contribution-graph.png
+          path: contribution-graph.png
+      - name: Tweet it
+        uses: snow-actions/tweet@v1.3.0
+        with:
+          status: Hello World
+          media_paths: contribution-graph.png
+        env:
+          CONSUMER_API_KEY: ${{ secrets.TWITTER_CONSUMER_KEY  }}
+          CONSUMER_API_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_SECRET }}
+          ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN_KEY }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
