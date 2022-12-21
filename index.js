@@ -1,5 +1,4 @@
 const core = require("@actions/core");
-const github = require("@actions/github");
 const { DateTime } = require("luxon");
 
 const startYear = 2022;

@@ -1,3 +1,4 @@
+name: Commit Hello World and Tweet
 on:
   schedule:
     - cron: "0 9 * * *"
@@ -22,23 +23,21 @@ jobs:
           git add numberOfDays.txt
           git commit -m "Github Actions Commit"
           git push
-      - name: tweet
-        uses: actions/setup-node@v2 # Set up Node.js
+      - name: setup
+        uses: actions/setup-node@v2
         with:
           node-version: 14.x
-      - run: npm install # Install dependencies
-      - run: node screenshot.js # Take the screenshot
-      - uses: actions/upload-artifact@v2 # Upload the screenshot as an artifact
-        with:
-          name: contribution-graph.png
-          path: contribution-graph.png
-      - name: Tweet it
-        uses: snow-actions/tweet@v1.3.0
-        with:
-          status: Hello World
-          media_paths: contribution-graph.png
+      - name: install
+        run: npm install 
+      - name: Take screenshot and manipulate
+        run: | 
+          node screenshot.js 
+          node compositeImage.js
+      - name: Tweet It 
         env:
-          CONSUMER_API_KEY: ${{ secrets.TWITTER_CONSUMER_KEY  }}
-          CONSUMER_API_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_SECRET }}
-          ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN_KEY }}
-          ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY  }}
+          TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
+          TWITTER_ACCESS_TOKEN_KEY: ${{ secrets.TWITTER_ACCESS_TOKEN_KEY }}
+          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        run: node tweet.js
+
