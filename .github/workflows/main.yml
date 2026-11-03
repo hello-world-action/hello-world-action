@@ -1,7 +1,7 @@
 name: Commit Hello World and Tweet
-on:
-  schedule:
-    - cron: "0 9 * * *"
+#on:
+#  schedule:
+#     - cron: "0 9 * * *"
 
 jobs:
   hello_world_job:
